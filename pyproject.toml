@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "e-commerce"            # Nome do seu pacote (você escolhe)
+version = "0.1.0"
+description = "E-commerce Data Project"
+authors = [
+    {name = "Jackson", email = "jacksonsventura@gmail.com"}
+]
+readme = "README.md"
+requires-python = ">=3.8"
+
+[tool.setuptools.packages.find]
+where = ["src"]
