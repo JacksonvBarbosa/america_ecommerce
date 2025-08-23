@@ -71,7 +71,7 @@ def grafico_dispersao_categorico(df: pd.DataFrame, x, y, categoria,
     plt.show()
 
 
-def matriz_correlacao(df: pd.DataFrame, colunas=None, metodo='pearson',
+def grafico_matriz_correlacao(df: pd.DataFrame, colunas=None, metodo='pearson',
                         titulo='Matriz de Correlação', figsize=(10, 8),
                         cmap='coolwarm', fmt='.2f', mostrar_valores=True):
     """

@@ -9,18 +9,18 @@ Description-Content-Type: text/markdown
 # Análise da Qualidade de Vinhos
 **Portfólio de Data Analytics | Jackson dos Santos Ventura**
 
-## 📊 Projeto: Análise Exploratória de Vinhos Importados para JACKWine
+## 📊 Projeto: Análise Exploratória e-commerce
 
 ### Contexto do Projeto
-A distribuidora JACKWine está expandindo seu catálogo através da importação de vinhos portugueses. Como analista de dados da empresa, realizei uma análise exploratória dos dados, identificando os fatores químicos que influenciam a qualidade dos produtos. Além disso, desenvolvi modelos de machine learning para prever a pontuação de qualidade dos vinhos, fornecendo insights estratégicos para apoiar o processo de seleção e importação.
+
 
 ### Objetivo
-Identificar relações entre os componentes químicos e a qualidade dos vinhos portugueses, visando compreender os principais fatores que influenciam sua avaliação e utilizar esses insights para apoiar decisões estratégicas e o desenvolvimento de modelos preditivos com machine learning.
+
 
 ## 🔬 Metodologia
 
 ### 1. Aquisição e Preparação dos Dados
-**Dataset:** winequality-red.csv (Fonte: UCI Machine Learning Repository)
+**Dataset:** 
 
 **Ferramentas:** Python, Pandas, NumPy, Matplotlib, Seaborn
 
@@ -66,61 +66,28 @@ Este estudo tem como objetivo analisar o Wine Quality Dataset, obtido através d
 O dataset foi analisado em sua forma bruta (raw data), contendo atributos físico-químicos e a nota de qualidade do vinho.
 
 A partir das estatísticas descritivas, identificamos:
-- Baixa dispersão na maioria das variáveis, devido ao baixo desvio padrão
-- Maior variabilidade no dióxido de enxofre (livre e total), com desvio padrão elevado — podendo apresentar valores muito acima ou abaixo da média
+- Alta dispersão na maioria das variáveis, devido ao alto desvio padrão
 
-Esse comportamento pode comprometer a capacidade de generalização dos modelos, tornando necessária a padronização dos dados para equilibrar as escalas durante o treinamento e teste.
 
 ### 2. Dados Duplicados
-Registros duplicados são comuns neste tipo de análise, pois amostras com propriedades físico-químicas semelhantes tendem a gerar notas de qualidade próximas ou iguais. Por isso, neste caso, a duplicidade não foi tratada como erro.
+Não há registros duplicados no DataFrame.
 
 ### 3. Distribuição e Outliers
 Os gráficos de distribuição e boxplots mostraram:
-- Ausência de distribuição normal em várias variáveis
-- Presença de outliers detectados pelo IQR e z-score
 
-Optou-se por manter os outliers detectados pelo IQR, aplicando capping para limitar valores extremos. Essa decisão reduz a dispersão e melhora o desempenho de algoritmos sensíveis à escala, como Logistic Regression e SVM.
 
 ### 4. Relações Entre Variáveis
 
-#### 4.1 Acidez Volátil × Qualidade
-Vinhos de alta qualidade tendem a ter menor acidez volátil, idealmente abaixo de 1,0 g/L. No entanto, a acidez não atua isoladamente e deve ser analisada junto a outros fatores.
 
-#### 4.2 Teor Alcoólico × Qualidade
-Os dados indicam relação diretamente proporcional (r ≈ 0,48). Apesar disso:
-- Maior teor alcoólico não garante melhor qualidade
-- Para equilíbrio no paladar, recomenda-se manter abaixo de 13%
-- Pela legislação brasileira, o mínimo para ser considerado vinho é 7%
-
-#### 4.3 Sulfitos e Ácido Cítrico × Qualidade
-- **Sulfito:** manter abaixo de 1,0 g/L para priorizar processos mais naturais
-- **Ácido cítrico:** manter abaixo de 0,5 g/L
-- pH baixo contribui para maior longevidade do vinho
-
-#### 4.4 Acidez Volátil × Teor Alcoólico
-Não há padrão claro que permita prever o teor alcoólico a partir da acidez volátil.
 
 ### 5. Balanceamento de Classes
-O dataset apresenta alto desbalanceamento nas classes de qualidade, o que poderia enviesar os modelos.
 
-Foi aplicada a técnica **SMOTEENN**, que combina:
-- **SMOTE:** gera amostras sintéticas para a classe minoritária
-- **Undersampling inteligente:** remove ruídos e pontos conflitantes entre classes
-
-Com isso, as fronteiras entre as classes ficaram mais limpas, aumentando a robustez do treinamento.
 
 ### 6. Conclusões e Próximos Passos
-- A correlação entre teor alcoólico e qualidade é moderada, mas não implica causalidade
-- O pré-processamento incluiu capping para outliers e padronização para variáveis de alta variabilidade
-- O desbalanceamento foi corrigido com SMOTEENN, reduzindo viés nos modelos
-- A próxima etapa será o treinamento de algoritmos de classificação usando as variáveis originais
-- Caso o desempenho não atinja o esperado, serão incorporadas variáveis externas (tipo de uva, região climática, técnicas de vinificação) para aprimorar a previsão da qualidade
+
 
 ## 🤖 Machine Learning
 
-Nesta etapa, aplicamos diferentes algoritmos de machine learning para prever a qualidade do vinho com base nas variáveis do nosso dataset.
-
-O objetivo foi comparar modelos, avaliar métricas de desempenho e realizar validações para garantir que as previsões sejam consistentes e livres de overfitting, assegurando a melhor escolha para uso em produção.
 
 ### 🔹 Modelos utilizados
 
@@ -146,9 +113,9 @@ O objetivo foi comparar modelos, avaliar métricas de desempenho e realizar vali
 Nosso modelo base, a **Árvore de Classificação**, já apresentou um resultado muito satisfatório, como mostrado anteriormente. A partir dele, rodamos outros modelos para comparação e aplicamos validações para garantir que nossos dados não estivessem sofrendo de overfitting, o que poderia prejudicar as previsões.
 
 ### 📊 Comparação de Modelos
-- **Regressão Logística** → Teve desempenho inferior ao modelo base
-- **Todos os modelos** → Obtiveram F1-score acima de 80%, um ótimo resultado para nossas predições
-- **Melhor desempenho** → Random Forest, com 97% de F1-score — modelo escolhido para as validações finais
+- **Regressão Logística** → 
+- **Todos os modelos** → Obtiveram F1-score acima de 
+- **Melhor desempenho** → Random Forest, 
 
 ### 🔍 Validações Realizadas
 
@@ -156,40 +123,42 @@ Nosso modelo base, a **Árvore de Classificação**, já apresentou um resultado
 Foi aplicada validação cruzada combinada com Random Search, que testa diferentes blocos de dados separadamente, preservando a generalização.
 
 **Resultados:**
-- Média dos scores por fold: 0.96
-- Desvio padrão: 0.0053 (baixo, indicando consistência)
-- Resultado idêntico de acurácia (0.955) foi obtido mesmo sem cruzar os dados, reforçando a estabilidade do modelo
+- Média dos scores por fold: 
+- Desvio padrão:  (baixo, indicando consistência)
+- Resultado de acurácia
 
 #### 2. Análise de Overfitting
-- Apesar de o treino apresentar score 1.0, o teste manteve 0.955, mostrando que o modelo está generalizando bem para dados novos
-- A curva de aprendizado confirmou que a validação está próxima ao treino, sem evidências de overfitting
+
 
 ### ✅ Conclusão
-Os testes e validações confirmaram que o **Random Forest** é o modelo mais adequado para este problema, entregando alta performance e mantendo a capacidade de generalização. O próximo passo será aplicar este modelo em dados novos para validar seu comportamento em produção.
+Os testes e validações confirmaram que o **modelo** é o modelo mais adequado para este problema, entregando alta performance e mantendo a capacidade de generalização. O próximo passo será aplicar este modelo em dados novos para validar seu comportamento em produção.
 
 ## 🚀 Como utilizar no projeto
 
 A arquitetura do projeto foi pensada para ser prática. Para treinar, avaliar e fazer previsões com qualquer modelo disponível, siga o guia abaixo.
 
 ### 1. Instalação e Configuração
-Para replicar o ambiente de desenvolvimento, siga estes passos:
+Para replicar o ambiente de desenvolvimento conda, siga estes passos:
 
-**Crie e ative o ambiente virtual:**
+**Crie e ative o ambiente virtual conda:**
 ```bash
-# Criar um novo ambiente
-conda create --name <nome_do_seu_projeto> python=3.10
-
-# Ativar o ambiente
-conda activate <nome_do_seu_projeto>
-```
-
-**Instale as dependências:**
-```bash
-pip install -r requirements.txt
-```
-```bash
+# Cria o ambiente e já instala as dependências do projeto
 conda env create -f environment.yml
+
+# Ative o ambiente
+conda activate <nome do projeto>
+
+# caso não saiba entre em enviroment que o nome estará lá
 ```
+
+**Ativar o setup para utilizar os pacotes no notebook**
+- Nota rode esse código após ativar o ambiente
+
+```bash
+# Instalar editable mode
+pip install -e .
+```
+
 
 **Configure no VS Code:**
 1. Pressione `Ctrl + Shift + P`

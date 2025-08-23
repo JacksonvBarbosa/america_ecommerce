@@ -1,4 +1,4 @@
-name: e-commerce
+name: america_ecommerce
 channels:
   - conda-forge
   - defaults
@@ -250,4 +250,4 @@ dependencies:
   - zipp=3.23.0=pyhd8ed1ab_0
   - zstandard=0.23.0=py311he736701_2
   - zstd=1.5.7=hbeecb71_2
-prefix: C:\Users\jacom\anaconda3\envs\Portifolio_Data_Analytics-vinhos_jackwine
+

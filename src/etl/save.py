@@ -1,7 +1,7 @@
 import os
 from config import DATA_PROCESSED, DATA_RAW  # ✅ Import correto (sem 'src.')
 
-def save_to_csv(df, filename: str):
+def save_to_processed_csv(df, filename: str):
     """
     Salva um DataFrame como CSV na pasta DATA_PROCESSED.
     

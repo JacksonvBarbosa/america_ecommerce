@@ -143,6 +143,14 @@ conda activate <nome do projeto>
 # caso não saiba entre em enviroment que o nome estará lá
 ```
 
+**Ativar o setup para utilizar os pacotes no notebook**
+- Nota rode esse código após ativar o ambiente
+
+```bash
+# Instalar editable mode
+pip install -e .
+```
+
 
 **Configure no VS Code:**
 1. Pressione `Ctrl + Shift + P`

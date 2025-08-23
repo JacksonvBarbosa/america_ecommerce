@@ -9,7 +9,7 @@ import seaborn as sns
 import numpy as np
 
 # Gráfico de Barras
-def grafico_barra(df: pd.DataFrame, x, y, hue, orient: str = 'v', paleta='tab10', titulo='', ylabel='', xlabel=''):
+def grafico_barra(df: pd.DataFrame, x, y, hue=None, orient: str = 'v', paleta='tab10', titulo='', ylabel='', xlabel=''):
     """
     Esta função recebe parametros para gerar gráfico de barra.
     
@@ -25,9 +25,9 @@ def grafico_barra(df: pd.DataFrame, x, y, hue, orient: str = 'v', paleta='tab10'
     Retorna:
     Gráfico de barras (barplot)
     """
-    plt.figure(figsize=(10,6))
+    plt.figure(figsize=(12,8))
 
-    ax = sns.barplot(df, x=x,y=y,hue=hue , palette=paleta, orient=orient)
+    ax = sns.barplot(data=df, x=x, y=y, hue=hue, palette=paleta, orient=orient)
     plt.title(titulo, fontsize=18, fontweight='bold', loc='left')
     plt.ylabel(ylabel)
     plt.xlabel(xlabel)
@@ -43,56 +43,49 @@ def grafico_barra(df: pd.DataFrame, x, y, hue, orient: str = 'v', paleta='tab10'
     plt.show()
 
 # Gráfico de Linha
-def grafico_linha(df: pd.DataFrame, x, y, hue= None, color='blue', linewidth=2, linestyle='-', 
+def grafico_linha(df: pd.DataFrame, x=None, y=None, hue=None, 
+                    color='blue', linewidth=2, linestyle='-', 
                     marker='o', markersize=6, titulo='', ylabel='', xlabel='', 
-                    alpha=0.8, figsize=(10, 6), grid=True):
+                    alpha=0.8, figsize=(10, 6), grid=True, 
+                    ytick=False, xticks_step=None, xrotaion=45):
     """
-    Esta função recebe parâmetros para gerar gráfico de linha.
-    
-    Parâmetros:
-    df: dataframe
-    x: coluna do df no eixo x (horizontal)
-    y: coluna do df no eixo y (vertical)
-    color: cor da linha no gráfico
-    linewidth: espessura da linha
-    linestyle: estilo da linha ('-', '--', '-.', ':')
-    marker: marcador dos pontos ('o', 's', '^', 'D', etc.)
-    markersize: tamanho dos marcadores
-    titulo: título do gráfico
-    xlabel: rótulo do eixo x
-    ylabel: rótulo do eixo y
-    alpha: transparência da linha
-    figsize: tamanho da figura (largura, altura)
-    grid: mostrar grade no gráfico
-
-    Retorna:
-    Gráfico de linha (lineplot)
+    Gera gráfico de linha:
+    - x e y devem ser nomes de colunas (str).
+    - xticks_step: controla o espaçamento dos ticks do eixo X (int).
     """
     plt.figure(figsize=figsize)
-    
-    # Criar o gráfico de linha
+
+    # Converte Period para datetime automaticamente
+    if pd.api.types.is_period_dtype(df[x]):
+        df[x] = df[x].dt.to_timestamp()
+
+    # 🔹 Gráfico de linha
     sns.lineplot(data=df, x=x, y=y, hue=hue,
-                color=color, 
-                linewidth=linewidth,
-                linestyle=linestyle,
-                marker=marker,
-                markersize=markersize,
-                alpha=alpha)
-    
-    # Configurar títulos e rótulos
+                    color=color, linewidth=linewidth,
+                    linestyle=linestyle, marker=marker,
+                    markersize=markersize, alpha=alpha)
+
     plt.title(titulo, fontsize=14, fontweight='bold')
     plt.xlabel(xlabel, fontsize=12)
     plt.ylabel(ylabel, fontsize=12)
     
-    # Configurar grade
     if grid:
         plt.grid(True, linestyle='--', alpha=0.3)
     
-    # Melhorar layout
-    plt.tight_layout()
+    if ytick:
+        plt.yticks([])  
+        plt.gca().set_yticklabels([])
+
+    # 🔹 Controla os ticks do eixo X
+    if xticks_step is not None:
+        plt.xticks(df[x][::xticks_step])  # pega de step em step
     
-    # Mostrar gráfico
+    plt.xticks(rotation=xrotaion)
+
+    plt.tight_layout()
     plt.show()
+
+
 
 # Gráfico Multiplas Linhas
 def grafico_multiplas_linhas(df: pd.DataFrame, x, y_columns, colors=None, linewidth=2, 
@@ -164,21 +157,33 @@ def grafico_multiplas_linhas(df: pd.DataFrame, x, y_columns, colors=None, linewi
 def grafico_pizza(df: pd.DataFrame, values, labels, titulo='', figsize=(8, 8), 
                     autopct='%1.1f%%', colors=None):
     """
-    Gráfico de pizza
-    
-    Args:
-        values: coluna com valores
-        labels: coluna com rótulos
-        autopct: formato dos percentuais
+    Gráfico de pizza melhorado: lida com fatias pequenas.
     """
     plt.figure(figsize=figsize)
-    
+
     if colors is None:
         colors = plt.cm.Set3.colors
-    
-    plt.pie(df[values], labels=df[labels], autopct=autopct, 
-            colors=colors, startangle=90)
-    
+
+    # Calcular explode para fatias pequenas
+    explode = [0.05 if v < 0.05*df[values].sum() else 0 for v in df[values]]
+
+    wedges, texts, autotexts = plt.pie(
+        df[values],
+        labels=df[labels],
+        autopct=autopct,
+        startangle=90,
+        colors=colors,
+        explode=explode,
+        pctdistance=0.7,     # afasta percentual do centro
+        labeldistance=1.05   # afasta label do centro
+    )
+
+    # Ajustar fonte dos labels e percentuais
+    for t in texts:
+        t.set_fontsize(10)
+    for at in autotexts:
+        at.set_fontsize(9)
+
     plt.title(titulo, fontsize=14, fontweight='bold')
     plt.axis('equal')
     plt.tight_layout()
@@ -199,5 +204,38 @@ def grafico_area(df: pd.DataFrame, x, y, color='lightblue', alpha=0.7,
     plt.xlabel(xlabel or x, fontsize=12)
     plt.ylabel(ylabel or y, fontsize=12)
     plt.grid(True, alpha=0.3)
+    plt.tight_layout()
+    plt.show()
+
+# Frequência
+def grafico_frequencia(df: pd.DataFrame, coluna, titulo='', xlabel='', ylabel='Contagem', 
+                        figsize=(10,6), paleta='tab10', rot=0):
+    """
+    Gráfico de barras mostrando a frequência (count) de uma coluna categórica.
+    
+    Args:
+        df: DataFrame com os dados.
+        coluna: coluna categórica para contar frequência.
+        titulo: título do gráfico.
+        xlabel: rótulo do eixo x.
+        ylabel: rótulo do eixo y (default: 'Contagem').
+        figsize: tamanho da figura.
+        paleta: paleta de cores (Seaborn).
+        rot: rotação dos labels do eixo x.
+    """
+    plt.figure(figsize=figsize)
+    ax = sns.countplot(data=df, x=coluna, palette=paleta, hue= coluna, order=df[coluna].value_counts().index)
+    
+    plt.title(titulo, fontsize=14, fontweight='bold')
+    plt.xlabel(xlabel if xlabel else coluna, fontsize=12)
+    plt.ylabel(ylabel, fontsize=12)
+    plt.xticks(rotation=rot)
+    
+    # Colocar contagem no topo das barras
+    for p in ax.patches:
+        height = p.get_height()
+        ax.annotate(f'{height}', xy=(p.get_x() + p.get_width() / 2, height),
+                    ha='center', va='bottom', fontsize=10)
+    
     plt.tight_layout()
     plt.show()
