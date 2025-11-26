@@ -10,7 +10,17 @@ authors = [
     {name = "Jackson", email = "jacksonsventura@gmail.com"}
 ]
 readme = "README.md"
-requires-python = ">=3.8"
+requires-python = ">=3.11,<3.12"
 
 [tool.setuptools.packages.find]
-where = ["src"]
+where = ["."]
+
+[tool.poetry.dependencies]
+stats = "^0.1.2a0"
+pandas = "^2.3.3"
+sqlalchemy = "^2.0.44"
+requests = "^2.32.5"
+matplotlib = "^3.10.7"
+seaborn = "^0.13.2"
+plotly = "^6.5.0"
+scipy = "^1.16.3"
