@@ -10,8 +10,9 @@ import numpy as np
 
 # Gráfico de Barras
 def grafico_barra(df: pd.DataFrame, x, y, hue=None, orient: str = 'v', figsize=(10,6),
-                  paleta='tab10', cores=None, titulo='', ylabel='', xlabel='', errorbar=None,
-                  grid: bool = False, alpha=None, legend_title: str = None, legend_labels: dict = None):
+                    paleta='tab10', cores=None, titulo='', ylabel='', xlabel='', errorbar=None,
+                    grid: bool = False, alpha=None, legend_title: str = None, legend_labels: dict = None,
+                    brazilian_style=False):
     """
     Função para gerar gráfico de barras com Seaborn.
 
@@ -59,9 +60,25 @@ def grafico_barra(df: pd.DataFrame, x, y, hue=None, orient: str = 'v', figsize=(
         x_limite = df[x].max()
         plt.xlim(0, x_limite * 1.1)
 
-    # Labels das barras
-    for container in ax.containers:
-        ax.bar_label(container, label_type='edge', fontsize=11, fontweight='bold', padding=3)
+    # Labels formatados em estilo brasileiro
+    if brazilian_style is True:
+        for container in ax.containers:
+            labels = []
+        
+            for v in container.datavalues:
+                # Formata número para estilo brasileiro: 1.234.567
+                fmt = f"{v:,.0f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                labels.append(fmt)
+        
+            ax.bar_label(
+                container,
+                labels=labels,
+                label_type='edge',
+                fontsize=11,
+                fontweight='bold',
+                padding=3
+            )
+
 
     # Grid (aplica apenas se grid=True)
     if grid:
