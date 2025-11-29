@@ -3,9 +3,16 @@ data/raw/
 data/processed/
 data/interim/
 
-# Ambientes
+# Env
 .env
+.venv/
+venv/
+
+# Cache e temporários
 *.pyc
 __pycache__/
 .ipynb_checkpoints/
-.venv
+.DS_Store
+
+# Logs
+*.log
